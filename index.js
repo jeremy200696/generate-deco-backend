@@ -6,7 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const IMGBB_API_KEY = '4db51f0de701360d78acd129a476680e'; // TA CLE IMGBB
+const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
+const HUGGINGFACE_TOKEN = process.env.HUGGINGFACE_TOKEN;
 
 // Route POST pour recevoir le prompt et générer l'image IA
 app.post('/api/generate-inspiration', async (req, res) => {
@@ -19,7 +20,10 @@ app.post('/api/generate-inspiration', async (req, res) => {
     // 1. Appel HuggingFace API (Stable Diffusion)
     const hfRes = await fetch("https://api-inference.huggingface.co/models/stabilityai/stable-diffusion", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${HUGGINGFACE_TOKEN}`
+      },
       body: JSON.stringify({ inputs: prompt })
     });
 
